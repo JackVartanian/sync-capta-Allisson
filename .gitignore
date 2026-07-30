@@ -4,7 +4,11 @@
 # Dados gerados pelo ETL
 datasets/*
 !datasets/.gitkeep
+!datasets/parquet/
+datasets/parquet/*
 !datasets/parquet/.gitkeep
+!datasets/json/
+datasets/json/*
 !datasets/json/.gitkeep
 ai_datasets/*
 !ai_datasets/.gitkeep
