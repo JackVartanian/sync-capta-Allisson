@@ -112,8 +112,8 @@ def produtos_adega():
 
         print('Processo completo, executado em %s segundos ---' %
               (round(time.time() - start_time, 2)))
-    except:
-        print('Erro ao exportar Produtos Adega')
+    except Exception as e:
+        print('Erro ao exportar Produtos Adega:', e)
 
     print("\n")
 
