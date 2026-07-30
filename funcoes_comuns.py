@@ -297,6 +297,22 @@ def sendToFTP(filename):
     print('Arquivo CSV enviado para o FTP em %s segundos ---' %
           (round(time.time() - start_time, 2)))
 
+def sendToFTP_ai(filename):
+    """Envia para o FTP um CSV gerado na pasta ai_datasets/."""
+
+    start_time = time.time()
+
+    ftp_server = conn_ftp()
+
+    file = open('ai_datasets/' + filename + '.csv', 'rb')
+
+    ftp_server.storbinary('STOR ' + filename + '.csv', file, 102400)
+
+    ftp_server.quit()
+
+    print('Arquivo CSV (ai) enviado para o FTP em %s segundos ---' %
+          (round(time.time() - start_time, 2)))
+
 # enviar para o FTP em formato .txt	text/plain
 def sendToFTP_txt(filename):
 
@@ -534,13 +550,38 @@ def calendario_exchange():
 
 
 def get_exchange_rates(start_date, end_date):
+    # A API SGS do Banco Central limita consultas JSON a periodos de ate 10
+    # anos, entao a busca e feita em janelas menores e concatenada no final.
     base_url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.10813/dados?formato=json&dataInicial={}&dataFinal={}"
-    url = base_url.format(start_date, end_date)
-    response = requests.get(url)
-    data = response.json()
-    df = pd.DataFrame(data)
+
+    inicio = datetime.datetime.strptime(start_date, '%d/%m/%Y')
+    fim = datetime.datetime.strptime(end_date, '%d/%m/%Y')
+
+    partes = []
+    janela_inicio = inicio
+    while janela_inicio <= fim:
+        janela_fim = min(
+            janela_inicio + datetime.timedelta(days=9*365), fim)
+
+        url = base_url.format(janela_inicio.strftime('%d/%m/%Y'),
+                              janela_fim.strftime('%d/%m/%Y'))
+        response = requests.get(url)
+        data = response.json()
+
+        # resposta de erro da API vem como dict (ex.: {"erro": "..."})
+        if not isinstance(data, list):
+            raise Exception(f'Erro na API do BCB: {data}')
+
+        if data:
+            partes.append(pd.DataFrame(data))
+
+        janela_inicio = janela_fim + datetime.timedelta(days=1)
+
+    df = pd.concat(partes, ignore_index=True)
     df['data'] = pd.to_datetime(df['data'], dayfirst=True)
+    df = df[~df['data'].duplicated(keep='last')]
     df.set_index('data', inplace=True)
+    df.sort_index(inplace=True)
     return df
 
 

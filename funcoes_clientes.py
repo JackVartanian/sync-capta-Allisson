@@ -178,8 +178,8 @@ def clientes_ai():
     fc.saveCSV_ai(df, 'clientes_ai')
     fc.saveCSV_ai_compression(df, 'clientes_ai_gzip', 'gzip')
 
-    fc.sendToFTP('clientes_ai')
-    fc.sendToFTP('clientes_ai_gzip')
+    fc.sendToFTP_ai('clientes_ai')
+    fc.sendToFTP_ai('clientes_ai_gzip')
 
     return df
 

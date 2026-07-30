@@ -38,14 +38,14 @@ SELECT
     RTRIM(a.cclass) AS "Classificacao",
     RTRIM(a.linhas) AS "Linha"
 
-FROM sljpro a WITH (NOLOCK, INDEX(PK_sljpro))
-    INNER JOIN sljgru f WITH (NOLOCK, INDEX(PK_sljgru)) 
+FROM sljpro a WITH (NOLOCK)
+    INNER JOIN sljgru f WITH (NOLOCK)
         ON a.cgrus = f.cgrus
-    INNER JOIN sljsgru g WITH (NOLOCK, INDEX(PK_sljsgru)) 
+    INNER JOIN sljsgru g WITH (NOLOCK)
         ON a.sgrus = g.codigos
-    INNER JOIN sljcol e WITH (NOLOCK, INDEX(PK_sljcol)) 
+    INNER JOIN sljcol e WITH (NOLOCK)
         ON a.colecoes = e.colecoes
-    LEFT JOIN sljcor c WITH (NOLOCK, INDEX(PK_sljcor)) 
+    LEFT JOIN sljcor c WITH (NOLOCK)
         ON a.codcors = c.cods
 WHERE a.mercs = 'AD'
 ORDER BY a.cpros;
