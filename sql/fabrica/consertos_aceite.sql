@@ -1,0 +1,7 @@
+SELECT
+  CAST(dataes AS DATE) 'Aceite_Fab',
+  RTRIM(nops) AS 'OP',
+  RTRIM(numes) AS 'OS_ACEITE'
+FROM SLJOPI WITH (NOLOCK)
+WHERE dopes IN ('CONSERTO JOIA','CONSERTO ESTOQUE')
+  AND dataes >= '2018/01/01'

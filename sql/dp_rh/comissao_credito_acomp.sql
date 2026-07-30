@@ -1,0 +1,3 @@
+SELECT *
+FROM SLJMCCR with(NOLOCK)
+WHERE grupos = '21024' AND datas >= '2020/01/01 00:00:00'
